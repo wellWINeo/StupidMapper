@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StupidMapper", "StupidMapper\StupidMapper.csproj", "{5E42ACB0-7B2D-44EF-86F1-0DFAEC0F7A49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StupidMapper.Tests", "StupidMapper.Tests\StupidMapper.Tests.csproj", "{FB52545A-F6FE-4FEF-A4B1-949622BB842C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5E42ACB0-7B2D-44EF-86F1-0DFAEC0F7A49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E42ACB0-7B2D-44EF-86F1-0DFAEC0F7A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E42ACB0-7B2D-44EF-86F1-0DFAEC0F7A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E42ACB0-7B2D-44EF-86F1-0DFAEC0F7A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB52545A-F6FE-4FEF-A4B1-949622BB842C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB52545A-F6FE-4FEF-A4B1-949622BB842C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB52545A-F6FE-4FEF-A4B1-949622BB842C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB52545A-F6FE-4FEF-A4B1-949622BB842C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
