@@ -1,0 +1,22 @@
+name: Publish package
+on:
+  workflow_run:
+    workflows:
+      - "Build and Test"
+    branches:
+      - "main"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'release' }}
+    name: Publish nuget package
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "7.0.x"
+      - name: Build and push
+        run: ./Scripts/publish.sh
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
