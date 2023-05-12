@@ -1,5 +1,9 @@
 name: Publish package
+
 on:
+  push:
+    tags:
+      - "release-*"
   workflow_run:
     workflows:
       - "Build and Test"
@@ -11,7 +15,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'release' }}
     name: Publish nuget package
     steps:
       - uses: actions/checkout@v3
