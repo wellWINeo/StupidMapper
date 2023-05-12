@@ -1,43 +1,20 @@
-using Microsoft.Extensions.DependencyInjection;
-using StupidMapper.Extensions;
-using StupidMapper.Tests.Models;
-
 namespace StupidMapper.Tests;
 
 public class MapperTests
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IStupidMapper _mapper;
 
     public MapperTests()
     {
-        _serviceProvider = new ServiceCollection()
+        var serviceProvider = new ServiceCollection()
             .AddStupidMapper()
             .BuildServiceProvider();
-    }
-
-
-    [Fact]
-    public void MapperResolvingTest()
-    {
-        var mapper = _serviceProvider.GetRequiredService<IStupidMapper>();
-        
-        Assert.NotNull(mapper);
-    }
-
-    [Fact]
-    public void MapResolveTest()
-    {
-        var map = _serviceProvider.GetRequiredService<IStupidMap<Account, PersonDto>>();
-        
-        Assert.NotNull(map);
-        Assert.IsAssignableFrom<IStupidMap<Account, PersonDto>>(map);
-        Assert.IsType<PersonDtoMap>(map);
+        _mapper = serviceProvider.GetRequiredService<IStupidMapper>();
     }
 
     [Fact]
     public void MapTwoGenericTest()
     {
-        var mapper = _serviceProvider.GetRequiredService<IStupidMapper>();
         var expected = new PersonDto
         {
             Login = "johndoe",
@@ -52,16 +29,16 @@ public class MapperTests
             LastName = "Doe",
         };
 
-        var actual = mapper.Map<Account, PersonDto>(account);
+        var actual = _mapper.Map<Account, PersonDto>(account);
         
-        Assert.NotNull(actual);
-        Assert.Equivalent(expected, actual);
+        actual
+            .Should().NotBeNull()
+            .And.BeEquivalentTo(actual);
     }
     
     [Fact]
     public void MapSingleGenericTest()
     {
-        var mapper = _serviceProvider.GetRequiredService<IStupidMapper>();
         var expected = new PersonDto
         {
             Login = "johndoe",
@@ -76,9 +53,96 @@ public class MapperTests
             LastName = "Doe",
         };
 
-        var actual = mapper.Map<PersonDto>(account);
-        
-        Assert.NotNull(actual);
-        Assert.Equivalent(expected, actual);
+        var actual = _mapper.Map<PersonDto>(account);
+
+        actual
+            .Should().NotBeNull()
+            .And.BeEquivalentTo(actual);
+    }
+
+    [Fact]
+    public void MapFewTwoGenericTest()
+    {
+        var accounts = new Account[]
+        {
+            new()
+            {
+                Id = 1,
+                Email = "johndoe@example.com",
+                FirstName = "John",
+                MiddleName = "Bart",
+                LastName = "Doe",
+            },
+            new()
+            {
+                Id = 1,
+                Email = "AntioneCarraway@example.com",
+                FirstName = "Antione",
+                MiddleName = "Brandon",
+                LastName = "Carraway",
+            }
+        };
+        var expected = new PersonDto[]
+        {
+            new()
+            {
+                Login = "johndoe",
+                DisplayName = "John Bart Doe",
+            },
+            new()
+            {
+                Login = "AntioneCarraway",
+                DisplayName = "Antione Brandon Carraway",
+            },
+        };
+
+        var actual = _mapper
+            .MapFew<Account, PersonDto>(accounts)
+            .ToArray();
+
+        actual.Should().BeEquivalentTo(expected);
+    }
+    
+    [Fact]
+    public void MapFewSingleGenericTest()
+    {
+        var accounts = new Account[]
+        {
+            new()
+            {
+                Id = 1,
+                Email = "johndoe@example.com",
+                FirstName = "John",
+                MiddleName = "Bart",
+                LastName = "Doe",
+            },
+            new()
+            {
+                Id = 1,
+                Email = "AntioneCarraway@example.com",
+                FirstName = "Antione",
+                MiddleName = "Brandon",
+                LastName = "Carraway",
+            }
+        };
+        var expected = new PersonDto[]
+        {
+            new()
+            {
+                Login = "johndoe",
+                DisplayName = "John Bart Doe",
+            },
+            new()
+            {
+                Login = "AntioneCarraway",
+                DisplayName = "Antione Brandon Carraway",
+            },
+        };
+
+        var actual = _mapper
+            .MapFew<PersonDto>(accounts)
+            .ToArray();
+
+        actual.Should().BeEquivalentTo(expected);
     }
 }

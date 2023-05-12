@@ -1,9 +1,11 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using StupidMapper.Exceptions;
 
 namespace StupidMapper;
 
+/// <summary>
+/// Wrapper around resolving maps and invoking them
+/// </summary>
 public sealed class StupidMapper : IStupidMapper
 {
     private readonly IServiceProvider _serviceProvider;
@@ -13,32 +15,77 @@ public sealed class StupidMapper : IStupidMapper
         _serviceProvider = serviceProvider;
     }
 
-    public TDestination Map<TDestination>(object source)
+    /// <inheritdoc />
+    public TDestination Map<TDestination>(dynamic source)
+        where TDestination : new()
     {
-        var mapperType = typeof(IStupidMap<,>)
-            .MakeGenericType(source.GetType(), typeof(TDestination));
-        var map = _serviceProvider
-                      .GetRequiredService(mapperType)
-                  ?? throw new StupidMapNotFound(source.GetType(), typeof(TDestination));
+        var value = (TDestination?)InvokeFullyQualifiedMethod(
+            nameof(Map), 
+            source.GetType(), 
+            typeof(TDestination),
+            source);
 
-        var methodInfo = map
-                             .GetType()
-                             .GetMethod("Map")
-                         ?? throw new StupidMapperInternalException("Method on map not found");
+        return value ?? throw new StupidMapperInternalException("Mapped value is null");
+    }
+    
+    /// <inheritdoc />
+    public IEnumerable<TDestination> MapFew<TDestination>(IEnumerable<object>? sources) 
+        where TDestination : new()
+    {
+        if (sources?.Any() != true)
+            return Enumerable.Empty<TDestination>();
 
-        var value = (TDestination?) methodInfo.Invoke(map, new []{source});
-            
-        return value
-            ?? throw new StupidMapperInternalException("Mapped value is null");
+        var valuesType = sources!.First().GetType();
+        var values = (IEnumerable<TDestination>?)InvokeFullyQualifiedMethod(
+            nameof(MapFew),
+            valuesType,
+            typeof(TDestination),
+            sources);
+
+        return values ?? throw new StupidMapperInternalException("Mapped values are null");
     }
 
+    
+    private object InvokeFullyQualifiedMethod(
+        string methodName, 
+        Type source, 
+        Type destination, 
+        params object[] parameters)
+    {
+        return GetType()
+            .GetMethods()
+            .Single(m => m.Name == methodName && m.GetGenericArguments().Length == 2)
+            .MakeGenericMethod(source, destination)
+            .Invoke(this, parameters);
+    }
+
+    
+    private IStupidMap<TSource, TDestination> GetMap<TSource, TDestination>()
+        where TSource : new()
+        where TDestination : new()
+        => _serviceProvider.GetRequiredService<IStupidMap<TSource, TDestination>>() ??
+           throw StupidMapNotFoundException.Create<TSource, TDestination>();
+    
+    /// <inheritdoc />
     public TDestination Map<TSource, TDestination>(TSource source) 
         where TSource : new()
         where TDestination : new()
     {
-        var mapper = _serviceProvider
-                         .GetRequiredService<IStupidMap<TSource, TDestination>>()
-                     ?? throw StupidMapNotFound.Create<TSource, TDestination>();
-        return mapper.Map(source);
+        var map = GetMap<TSource, TDestination>();
+        return map.Map(source);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<TDestination> MapFew<TSource, TDestination>(IEnumerable<TSource>? sources) 
+        where TSource : new() 
+        where TDestination : new()
+    {
+        if (sources?.Any() != true)
+            yield break;
+        
+        var map = GetMap<TSource, TDestination>();
+
+        foreach (var source in sources)
+            yield return map.Map(source);
     }
 }
