@@ -5,6 +5,8 @@ on:
       - "Build and Test"
     branches:
       - "main"
+    types:
+      - "completed"
 
 jobs:
   publish:
