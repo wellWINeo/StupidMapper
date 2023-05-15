@@ -17,7 +17,14 @@ public static class TypeExtensions
 
     internal static bool CompareInterfaceWithoutGenerics(Type withGenerics, Type noGenerics)
     {
-        var genericType = noGenerics.MakeGenericType(withGenerics.GetGenericArguments());
-        return genericType.IsEquivalentTo(withGenerics);
+        try
+        {
+            var genericType = noGenerics.MakeGenericType(withGenerics.GetGenericArguments());
+            return genericType.IsEquivalentTo(withGenerics);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }
