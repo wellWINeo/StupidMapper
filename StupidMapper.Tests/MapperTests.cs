@@ -33,7 +33,7 @@ public class MapperTests
         
         actual
             .Should().NotBeNull()
-            .And.BeEquivalentTo(actual);
+            .And.BeEquivalentTo(expected);
     }
     
     [Fact]
@@ -57,7 +57,7 @@ public class MapperTests
 
         actual
             .Should().NotBeNull()
-            .And.BeEquivalentTo(actual);
+            .And.BeEquivalentTo(expected);
     }
 
     [Fact]

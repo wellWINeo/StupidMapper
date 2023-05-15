@@ -1,7 +1,6 @@
 namespace StupidMapper.Tests.Models;
 
-public class PersonDto
+public class PersonDto : PersonDtoBase
 {
-    public string Login { get; set; } = default!;
     public string DisplayName { get; set; } = default!;
 }

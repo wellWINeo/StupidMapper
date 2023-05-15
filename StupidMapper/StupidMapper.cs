@@ -17,7 +17,6 @@ public sealed class StupidMapper : IStupidMapper
 
     /// <inheritdoc />
     public TDestination Map<TDestination>(dynamic source)
-        where TDestination : new()
     {
         var value = (TDestination?)InvokeFullyQualifiedMethod(
             nameof(Map), 
@@ -30,7 +29,6 @@ public sealed class StupidMapper : IStupidMapper
     
     /// <inheritdoc />
     public IEnumerable<TDestination> MapFew<TDestination>(IEnumerable<object>? sources) 
-        where TDestination : new()
     {
         if (sources?.Any() != true)
             return Enumerable.Empty<TDestination>();
@@ -61,15 +59,11 @@ public sealed class StupidMapper : IStupidMapper
 
     
     private IStupidMap<TSource, TDestination> GetMap<TSource, TDestination>()
-        where TSource : new()
-        where TDestination : new()
         => _serviceProvider.GetRequiredService<IStupidMap<TSource, TDestination>>() ??
            throw StupidMapNotFoundException.Create<TSource, TDestination>();
     
     /// <inheritdoc />
     public TDestination Map<TSource, TDestination>(TSource source) 
-        where TSource : new()
-        where TDestination : new()
     {
         var map = GetMap<TSource, TDestination>();
         return map.Map(source);
@@ -77,8 +71,6 @@ public sealed class StupidMapper : IStupidMapper
 
     /// <inheritdoc />
     public IEnumerable<TDestination> MapFew<TSource, TDestination>(IEnumerable<TSource>? sources) 
-        where TSource : new() 
-        where TDestination : new()
     {
         if (sources?.Any() != true)
             yield break;

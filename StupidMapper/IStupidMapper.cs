@@ -12,9 +12,8 @@ public interface IStupidMapper
     /// <returns>Mapped value</returns>
     /// <exception cref="StupidMapperInternalException">Internal error occured</exception>
     /// <exception cref="StupidMapNotFoundException">Cannot find suitable map</exception>
-    TDestination Map<TDestination>(dynamic source)
-        where TDestination : new();
-    
+    TDestination Map<TDestination>(dynamic source);
+
     /// <summary>
     /// Mapping multiple values to `TDestination` type
     /// </summary>
@@ -23,9 +22,8 @@ public interface IStupidMapper
     /// <returns></returns>
     /// <exception cref="StupidMapperInternalException">Internal error occured</exception>
     /// <exception cref="StupidMapNotFoundException">Cannot find suitable map</exception>
-    IEnumerable<TDestination> MapFew<TDestination>(IEnumerable<object> sources)
-        where TDestination : new();
-    
+    IEnumerable<TDestination> MapFew<TDestination>(IEnumerable<object> sources);
+
     /// <summary>
     /// Map with qualified source and destination value
     /// </summary>
@@ -35,9 +33,7 @@ public interface IStupidMapper
     /// <typeparam name="TDestination">Target value type</typeparam>
     /// <returns>Mapped value</returns>
     /// <exception cref="StupidMapNotFoundException">Cannot find suitable map</exception>
-    TDestination Map<TSource, TDestination>(TSource source)
-        where TSource : new()
-        where TDestination : new();
+    TDestination Map<TSource, TDestination>(TSource source);
 
     /// <summary>
     /// Map few values with qualified source and destination value
@@ -48,7 +44,5 @@ public interface IStupidMapper
     /// <typeparam name="TDestination">Target type of every source value</typeparam>
     /// <returns></returns>
     /// <exception cref="StupidMapNotFoundException">Cannot find suitable map</exception>
-    IEnumerable<TDestination> MapFew<TSource, TDestination>(IEnumerable<TSource> sources)
-        where TSource : new()
-        where TDestination : new();
+    IEnumerable<TDestination> MapFew<TSource, TDestination>(IEnumerable<TSource> sources);
 }
